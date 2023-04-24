@@ -2,9 +2,12 @@
 #define MAPPAMAP_H
 
 #include <SFML/Graphics.hpp>
-#include <cstdlib>\
+#include <SFML/Graphics/Shader.hpp>
+#include <cstdlib>
+#include <vector>
 #include <string>
 #include "player.h">
+#include "place.h"
 int roll(int dxd = 1)
 {
     int total = 0;
@@ -14,6 +17,8 @@ int roll(int dxd = 1)
     }
     return total;
 }
+
+#define COLOR_WRAPPER(ARG) Vector4(ARG)
 
 #define DIRT_COLOR sf::Color(244,164,96)
 #define WATER_COLOR sf::Color(202, 240, 246)
@@ -37,9 +42,8 @@ int roll(int dxd = 1)
 // TABLE 1.3
 #define LAKE_COLOR
 #define GLACIER_COLOR
-#define
 
-struct Deity {
+struct deity {
     std::string name;
     std::string symbol;
     std::string domain;
@@ -49,24 +53,25 @@ struct Deity {
 
 class MappaMap
 {
-    const sf::Shader dirtColor = "void main() " \
-    "{"\
-        // transform the vertex position
-        "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;" \
+    sf::RenderWindow *window;
 
-        // transform the texture coordinates
-        "gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;" \
+    sf::RenderTexture mapTexture;
+    sf::Sprite mapBackGround;
+    sf::Vector2f lastPos;
+    const float brush_size = 25;
 
-        // forward the vertex color
-        "gl_FrontColor = gl_Color;" \
-    "}";
+    unsigned int colorIndex;
+    bool isDrawing;
+    sf::CircleShape brush;
 
     std::vector<player> player_list;
     // 2.1
-    Deity generate_Deity();
+    deity generate_Deity();
 
 public:
     MappaMap();
+    void draw(sf::RenderWindow*);
+    void eventHandler(sf::Event);
 };
 
 #endif // MAPPAMAP_H

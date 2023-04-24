@@ -2,10 +2,10 @@
 #define PLAYER_H
 
 
-class Player
+class player
 {
 public:
-    Player();
+    player();
 };
 
 #endif // PLAYER_H

@@ -134,6 +134,16 @@ const std::vector<sf::Color> colors = {
     sf::Color(255, 0, 255, 8)
 };
 
+int roll(int dxd = 1)
+{
+    int total = 0;
+    for (int i = 0; i < dxd; i++)
+    {
+        total += rand() % 5 + 1;
+    }
+    return total;
+}
+
 MappaMap::MappaMap()
 {
 
@@ -145,6 +155,19 @@ MappaMap::MappaMap()
     brush = sf::CircleShape(brush_size, 24);
     brush.setFillColor(colors[colorIndex]);
 
+}
+
+MappaMap::MappaMap(sf::RenderWindow *renderTarget)
+{
+    mapTexture.create(renderTarget->getSize().x, renderTarget->getSize().y);
+    mapTexture.clear(sf::Color(207, 183, 120));
+    mapBackGround.setTexture(mapTexture.getTexture(), true);
+    this->isDrawing = false;
+    colorIndex = 0;
+    brush = sf::CircleShape(brush_size, 24);
+    brush.setFillColor(colors[colorIndex]);
+
+    window = renderTarget;
 }
 
 deity MappaMap::generate_Deity()
@@ -171,6 +194,11 @@ deity MappaMap::generate_Deity()
 void MappaMap::draw(sf::RenderWindow *renderTarget)
 {
     renderTarget->draw(this->mapBackGround);
+}
+
+void MappaMap::draw()
+{
+    this->window->draw(this->mapBackGround);
 }
 
 void MappaMap::eventHandler(sf::Event event)

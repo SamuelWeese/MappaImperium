@@ -102,6 +102,7 @@ int main()
     return 0;
 }
 */
+#include "mappamap.h"
 #include <SFML/Graphics.hpp>
 #include <vector>
 
@@ -111,7 +112,7 @@ int main(int argc, char **argv) {
     // worry about vsync or the time between drawing iterations
     window.setVerticalSyncEnabled(false);
     window.setFramerateLimit(60);
-
+/*
     // First we'll use a canvas to basically store our image
     sf::RenderTexture canvas;
     canvas.create(800, 600);
@@ -147,102 +148,32 @@ int main(int argc, char **argv) {
     // Apply some default color
     brush.setFillColor(colors[color]);
 
+*/
+
+//MappaMap
+    MappaMap map(&window);
 
 
-
-
-
-    while (window.isOpen()) {
+    while (window.isOpen())
+    {
         sf::Event event;
         while (window.pollEvent(event)) {
+            map.eventHandler(event);
             switch (event.type) {
             case sf::Event::Closed:
                 window.close();
                 break;
-            case sf::Event::KeyPressed:
-                switch (event.key.code) {
-                    case sf::Keyboard::C:
-                        // Clear our canvas
-                        canvas.clear(sf::Color::White);
-                        canvas.display();
-                        break;
-                    case sf::Keyboard::PageUp:
-                        // Get next color
-                        color = (color + 1) % colors.size();
-                        // Apply it
-                        brush.setFillColor(colors[color]);
-                        break;
-                    case sf::Keyboard::PageDown:
-                        // Get previous color
-                        color = (color - 1) % colors.size();
-                        // Apply it
-                        brush.setFillColor(colors[color]);
-                        break;
                 }
-                break;
-            case sf::Event::Resized:
-                {
-                    // Window got resized, update the view to the new size
-                    sf::View view(window.getView());
-                    const sf::Vector2f size(window.getSize().x, window.getSize().y);
-                    view.setSize(size); // Set the size
-                    view.setCenter(size / 2.f); // Set the center, moving our drawing to the top left
-                    window.setView(view); // Apply the view
-                    break;
-                }
-            case sf::Event::MouseButtonPressed:
-                // Only care for the left button
-                if (event.mouseButton.button == sf::Mouse::Left) {
-                    isDrawing = true;
-                    // Store the cursor position relative to the canvas
-                    lastPos = window.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y});
-
-                    // Now let's draw our brush once, so we can
-                    // draw dots without actually draging the mouse
-                    brush.setPosition(lastPos);
-
-                    // Draw our "brush"
-                    canvas.draw(brush);
-
-                    // Finalize the texture
-                    canvas.display();
-                }
-                break;
-            case sf::Event::MouseButtonReleased:
-                // Only care for the left button
-                if (event.mouseButton.button == sf::Mouse::Left)
-                    isDrawing = false;
-                break;
-            case sf::Event::MouseMoved:
-                if (isDrawing)
-                {
-                    // Calculate the cursor position relative to the canvas
-                    const sf::Vector2f newPos(window.mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y)));
-
-                    // I'm only using the new position here
-                    // but you could also use `lastPos` to draw a
-                    // line or rectangle instead
-                    brush.setPosition(newPos);
-
-                    // Draw our "brush"
-                    canvas.draw(brush);
-
-                    // Finalize the texture
-                    canvas.display();
-                    break;
-                }
-            }
         }
 
         // Clear the window
         window.clear(sf::Color(64, 64, 64));
 
         // Draw our canvas
-        window.draw(sprite);
+        map.draw();
 
         // Show the window
         window.display();
     }
-
     return 0;
 }

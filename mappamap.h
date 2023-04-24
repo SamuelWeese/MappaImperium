@@ -8,15 +8,7 @@
 #include <string>
 #include "player.h">
 #include "place.h"
-int roll(int dxd = 1)
-{
-    int total = 0;
-    for (int i = 0; i < dxd; i++)
-    {
-        total += rand() % 5 + 1;
-    }
-    return total;
-}
+int roll(int);
 
 #define COLOR_WRAPPER(ARG) Vector4(ARG)
 
@@ -70,7 +62,9 @@ class MappaMap
 
 public:
     MappaMap();
+    MappaMap(sf::RenderWindow *);
     void draw(sf::RenderWindow*);
+    void draw();
     void eventHandler(sf::Event);
 };
 

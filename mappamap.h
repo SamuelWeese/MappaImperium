@@ -2,7 +2,7 @@
 #define MAPPAMAP_H
 
 #include <SFML/Graphics.hpp>
-#include <cstdlib>\
+#include <cstdlib>
 #include <string>
 #include "player.h">
 int roll(int dxd = 1)

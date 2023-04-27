@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include "gui.h"
 
 /*
 
@@ -107,50 +108,15 @@ int main()
 #include <vector>
 
 int main(int argc, char **argv) {
-    sf::RenderWindow window(sf::VideoMode(800, 600), L"SFML Drawing – C to clear, PageUp/PageDown to pick colors", sf::Style::Default);
+    sf::VideoMode vid = sf::VideoMode(800, 600);
+    sf::RenderWindow window(vid, L"SFML Drawing – C to clear, PageUp/PageDown to pick colors", sf::Style::Default);
     // Set a specific frame rate, since we don't want to
     // worry about vsync or the time between drawing iterations
     window.setVerticalSyncEnabled(false);
     window.setFramerateLimit(60);
-/*
-    // First we'll use a canvas to basically store our image
-    sf::RenderTexture canvas;
-    canvas.create(800, 600);
-    canvas.clear(sf::Color::White);
 
-    // Next we'll need a sprite as a helper to draw our canvas
-    sf::Sprite sprite;
-    sprite.setTexture(canvas.getTexture(), true);
+    gui::ProgressBar aBar(10,10,10,10,sf::Color(10,10,10), 10, vid);
 
-    // Define some colors to use
-    // These are all with very low alpha so we
-    // can (over-)draw based on how fast we move the cursor
-    const std::vector<sf::Color> colors = {
-        sf::Color(255, 0, 0),
-        sf::Color(255, 255, 0, 8),
-        sf::Color(0, 255, 0, 8),
-        sf::Color(0, 255, 255, 8),
-        sf::Color(0, 0, 255, 8),
-        sf::Color(255, 0, 255, 8)
-    };
-
-    // We'll need something to actually draw
-    // For simplicity, I'm just drawing a circle shape
-    // but you could also draw a line, rectangle, or something more complex
-    const float brush_size = 25;
-    sf::CircleShape brush(brush_size, 24);
-    brush.setOrigin(brush_size, brush_size); // Center on the circle's center
-
-    sf::Vector2f lastPos;
-    bool isDrawing = false;
-    unsigned int color = 0;
-
-    // Apply some default color
-    brush.setFillColor(colors[color]);
-
-*/
-
-//MappaMap
     MappaMap map(&window);
 
 
@@ -166,11 +132,14 @@ int main(int argc, char **argv) {
                 }
         }
 
+        aBar.render(window);
+        aBar.update(10,200);
+
         // Clear the window
         window.clear(sf::Color(64, 64, 64));
 
         // Draw our canvas
-        map.draw();
+        map.draw(&window);
 
         // Show the window
         window.display();

@@ -1,75 +1,5 @@
 #include "mappamap.h"
 
-// 2.2
-const std::string Domains[6]{"a geography",
-                          "something in nature",
-                          "an art or craft",
-                          "an endeavor",
-                          "something from around the home",
-                          "something grim"
-};
-// 2.3
-const std::string Symbols[6]{"a weapon",
-                          "a tool",
-                          "an animal",
-                          "a plant",
-                          "something natural",
-                          "a body part"
-};
-// 2.4
-const std::string Names[36]{
-    "mith",
-    "tri",
-    "dar",
-    "gor",
-    "an",
-    "va",
-    "col",
-    "sige",
-    "dir",
-    "era",
-    "altas",
-    "remea",
-    "fir",
-    "alga",
-    "lorra",
-    "shiro",
-    "velen",
-    "amron",
-    "for",
-    "ened",
-    "ziri",
-    "red",
-    "saur",
-    "baal",
-    "li",
-    "serat",
-    "cho",
-    "maht",
-    "alidren",
-    "esh",
-    "sae",
-    "rah",
-    "on",
-    "tin",
-    "ti",
-    "ah"
-};
-// 2.5
-const std::string Sacred_Sites[11]
-{
-    "bottomless pit",
-    "lone mountain",
-    "hot spring",
-    "rock tower",
-    "small lake",
-    "ancient tree",
-    "cave",
-    "volcano",
-    "grove",
-    "henge",
-    "geyser"
-};
 // 3.1
 const std::string Races[11]
 {
@@ -134,17 +64,8 @@ const std::vector<sf::Color> colors = {
     sf::Color(255, 0, 255, 8)
 };
 
-int roll(int dxd = 1)
-{
-    int total = 0;
-    for (int i = 0; i < dxd; i++)
-    {
-        total += rand() % 5 + 1;
-    }
-    return total;
-}
 
-MappaMap::MappaMap()
+/*MappaMap::MappaMap()
 {
 
     mapTexture.create(800, 600);
@@ -155,7 +76,7 @@ MappaMap::MappaMap()
     brush = sf::CircleShape(brush_size, 24);
     brush.setFillColor(colors[colorIndex]);
 
-}
+}*/
 
 MappaMap::MappaMap(sf::RenderWindow *renderTarget)
 {
@@ -167,38 +88,13 @@ MappaMap::MappaMap(sf::RenderWindow *renderTarget)
     brush = sf::CircleShape(brush_size, 24);
     brush.setFillColor(colors[colorIndex]);
 
-    window = renderTarget;
+    this->window = renderTarget;
 }
 
-deity MappaMap::generate_Deity()
-{
-    deity aDeity;
-    bool roll_for_name = true;
-    for (auto aPlayer : this->player_list)
-    {
-        aDeity.domain = Domains[roll()-1];
-        aDeity.symbol = Symbols[roll()-1];
-        std::string deity_name = "";
-        if (roll_for_name)
-        {
-            short syllabols = (roll()%2) + (roll()%2);
-            for (int i = 0; i < syllabols; i++)
-            {
-                deity_name += Names[rand()%36];
-            }
-        } else { deity_name = "You pick one!";}
-    }
-    return aDeity;
-}
 
 void MappaMap::draw(sf::RenderWindow *renderTarget)
 {
     renderTarget->draw(this->mapBackGround);
-}
-
-void MappaMap::draw()
-{
-    this->window->draw(this->mapBackGround);
 }
 
 void MappaMap::eventHandler(sf::Event event)

@@ -6,42 +6,8 @@
 #include <cstdlib>
 #include <vector>
 #include <string>
-#include "player.h">
+#include "player.h"
 #include "place.h"
-int roll(int);
-
-#define COLOR_WRAPPER(ARG) Vector4(ARG)
-
-#define DIRT_COLOR sf::Color(244,164,96)
-#define WATER_COLOR sf::Color(202, 240, 246)
-//TODO SAM
-#define BEACH_COLOR
-#define GRASS_COLOR
-
-// TABLE 1.2
-#define SAVANNA_COLOR
-#define WETLANDS_COLOR
-#define HILLS_COLOR
-#define LAKE_COLOR
-#define RIVER_COLOR
-#define FOREST_COLOR
-#define MOUNTAINS_COLOR
-#define DESERT_COLOR
-#define JUNGLE_COLOR
-#define CANYON_COLOR
-#define VOLCANO_COLOR
-
-// TABLE 1.3
-#define LAKE_COLOR
-#define GLACIER_COLOR
-
-struct deity {
-    std::string name;
-    std::string symbol;
-    std::string domain;
-    std::vector<place *> sacred_sites;
-
-};
 
 class MappaMap
 {
@@ -58,10 +24,9 @@ class MappaMap
 
     std::vector<player> player_list;
     // 2.1
-    deity generate_Deity();
 
 public:
-    MappaMap();
+    //MappaMap();
     MappaMap(sf::RenderWindow *);
     void draw(sf::RenderWindow*);
     void draw();

@@ -31,6 +31,7 @@ public:
     void draw(sf::RenderWindow*);
     void draw();
     void eventHandler(sf::Event);
+    sf::Color getColor(Vector2 coords);
 };
 
 #endif // MAPPAMAP_H

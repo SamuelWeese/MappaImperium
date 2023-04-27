@@ -174,3 +174,9 @@ void MappaMap::eventHandler(sf::Event event)
         }
     }
 }
+
+sf::Color MappaMap::getColor(Vector2 coords)
+{
+    auto image = mapTexture.getTexture().copyToImage();
+    return image.getPixel(coords.x,coords.y);
+}

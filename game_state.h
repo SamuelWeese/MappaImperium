@@ -11,6 +11,9 @@ class game_state
     std::vector<player> players;
 public:
     game_state();
+    void eventHandler();
+
+
 };
 
 #endif // GAME_STATE_H

@@ -17,7 +17,9 @@ set(MAPPA_DEPENDENCIES
     player.cpp
     place.cpp
     mappamap.cpp
-    faction.cpp)
+    pausemenu.cpp
+    #faction.cpp
+    )
 add_executable(MappaImperium main.cpp ${MAPPA_DEPENDENCIES})
 
 target_link_libraries(

@@ -7,8 +7,10 @@
 
 class game_state
 {
+    sf::Texture spriteMap;
     //MappaMap map;
     std::vector<player> players;
+    void initSprites();
 public:
     game_state();
     void eventHandler();

@@ -11,6 +11,8 @@ find_package(SFML 2.5
     )
 
 set(MAPPA_DEPENDENCIES
+    combatcharacter.cpp
+    dice.cpp
     deity.cpp
     gui.cpp
     game_state.cpp

@@ -8,7 +8,7 @@ from PyQt5.QtCore import Qt, pyqtSignal, pyqtSlot
 from . import ImageOnCanvas, ViewWindow, ScrollableTextEdit
 
 import os
-
+DEBUGGING=False
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -26,9 +26,8 @@ class MainWindow(QMainWindow):
         splitter.addWidget(self.image_widget)
 
         # Load the default
-        self.image_widget.load_images_folder(folder_path=os.path.join(script_directory, "test_images/mar28thexample"))
 
-        self.side_bar = ScrollableTextEdit.TextEntryAndHistory(fxn_connection=self.open_latest_image, gpt_endpoint_fxn=self.pipeline_controller.text_prompt)
+        self.side_bar = ScrollableTextEdit.TextEntryAndHistory(fxn_connection=self.open_latest_image, gpt_endpoint_fxn=None)
         splitter.addWidget(self.side_bar)
 
         # Set the size ratio for the widgets (80% - 20%)
@@ -39,7 +38,7 @@ class MainWindow(QMainWindow):
 
         self.setup_menu_bar()
 
-        self.setWindowTitle('The Jaran Project')
+        self.setWindowTitle('Mappa Imperium')
         if DEBUGGING:
             self.setWindowTitle(f'The Jaran Project - {DEBUG_NAME}')
         self.setGeometry(100, 100, 800, 600)

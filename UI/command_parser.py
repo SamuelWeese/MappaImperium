@@ -1,6 +1,6 @@
 import random
 
-def roll_dice(words: list):
+def roll_dice(words: list)->str:
     if not words:
         return "You need to pass an argument to roll dice!"
     out_string = "You rolled...\n"
@@ -15,7 +15,7 @@ def roll_dice(words: list):
     return out_string
 
 
-def command_parsing(command: str, text_out=None):
+def command_parsing(command: str, text_out=None)->bool:
     if len(command) < 2:
         # Send text out Command too short!
         text_out("Command too short!")

@@ -61,7 +61,6 @@ class HistoryWidget(QListWidget):
         self.scrollToBottom()
 
 class TextEntryAndHistory(QWidget):
-     # GPT Endpoint is now prompt_master.generate_response()
     def __init__(self, fxn_connection=None):
         super().__init__()
         layout = QVBoxLayout()
@@ -80,7 +79,8 @@ class TextEntryAndHistory(QWidget):
         self.setLayout(layout)
 
 
-    # this fxn should be as light as possible 
+    # this fxn should be as light as possible, as it is called locally for UI on main thread
+    # heavier things should go in interaction to be put on a worker
     def updateHistoryClearText(self):
         self.text = self.scrollableTextEdit.toPlainText()
         self.historyWidget.updateHistory(self.text)
@@ -94,8 +94,6 @@ class TextEntryAndHistory(QWidget):
 
     def handle_response(self, text):
         self.historyWidget.updateResponse(text)
-        x, y = get_xyz(text=text)
-        self.fxn_connection(x=x, y=y, z=1) 
 
 class Worker(QThread):
     finished = pyqtSignal(str)
@@ -106,8 +104,5 @@ class Worker(QThread):
         self.text = text
 
     def run(self):
-        response = self.gpt_endpoint(self.text)
-        if type(response) == list:
-            response = ",".join(str(element) for element in response)
-
+        response = self.command_fxn(self.text)
         self.finished.emit(str(response))

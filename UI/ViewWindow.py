@@ -32,13 +32,6 @@ class ViewWindow(QGraphicsView):
         self.left_mouse_pressed = False
         self.setMouseTracking(True)
 
-    # def drawBackground(self, painter, rect):
-    #     super().drawBackground(painter, rect)
-    #     sceneRect = self.sceneRect()
-    #     print(self.texturePath)
-    #     pixmap = QPixmap(self.texturePath)
-    #     rectf = QRectF(pixmap.rect())
-    #     painter.drawPixmap(sceneRect, pixmap, rect)
     def drawBackground(self, painter, rect):
         super().drawBackground(painter, rect)
         # self.setBackgroundBrush(QBrush((QColor(63, 155, 11))))

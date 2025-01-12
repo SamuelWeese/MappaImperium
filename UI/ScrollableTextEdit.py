@@ -62,19 +62,16 @@ class HistoryWidget(QListWidget):
 
 class TextEntryAndHistory(QWidget):
      # GPT Endpoint is now prompt_master.generate_response()
-    def __init__(self, fxn_connection=None, gpt_endpoint_fxn=None):
+    def __init__(self, fxn_connection=None):
         super().__init__()
-        self.gpt_endpoint = gpt_endpoint_fxn
         layout = QVBoxLayout()
 
         self.historyWidget = HistoryWidget()
-        item = QListWidgetItem("DM: What would you like to generate?")
+        item = QListWidgetItem("Text Area")
         item.setBackground(QColor("lightgray"))
         self.historyWidget.addItem(item)
         self.scrollableTextEdit = ScrollableTextEdit()
         self.fxn_connection = fxn_connection
-        #if fxn_connection != None:
-        #    self.scrollableTextEdit.enterPressed.connect(fxn_connection)
         self.scrollableTextEdit.enterPressed.connect(self.interaction)
 
         layout.addWidget(self.historyWidget, 9)  # 80 of the content
@@ -83,17 +80,16 @@ class TextEntryAndHistory(QWidget):
         self.setLayout(layout)
 
 
+    # this fxn should be as light as possible 
     def updateHistoryClearText(self):
-        # this fxn calls img_workflow
         self.text = self.scrollableTextEdit.toPlainText()
         self.historyWidget.updateHistory(self.text)
         self.scrollableTextEdit.clear()
 
     def interaction(self):
         self.updateHistoryClearText()
-        if self.gpt_endpoint:
-            self.worker = Worker(self.gpt_endpoint, self.text)
-            self.worker.finished.connect(self.handle_response)
+        if starts_with(self.text) == self.command_symbol:
+            self.worker = Worker(command_parsing, self.text)
             self.worker.start()
 
     def handle_response(self, text):
@@ -104,9 +100,9 @@ class TextEntryAndHistory(QWidget):
 class Worker(QThread):
     finished = pyqtSignal(str)
 
-    def __init__(self, gpt_endpoint, text):
+    def __init__(self, command_fxn, text):
         super().__init__()
-        self.gpt_endpoint = gpt_endpoint
+        self.commmand_fxn = command_fxn 
         self.text = text
 
     def run(self):

@@ -27,7 +27,7 @@ class MainWindow(QMainWindow):
 
         # Load the default
 
-        self.side_bar = ScrollableTextEdit.TextEntryAndHistory(fxn_connection=self.open_latest_image, gpt_endpoint_fxn=None)
+        self.side_bar = ScrollableTextEdit.TextEntryAndHistory(fxn_connection=self.open_latest_image)
         splitter.addWidget(self.side_bar)
 
         # Set the size ratio for the widgets (80% - 20%)

@@ -1,13 +1,25 @@
-from . import ImageOnCanvas
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMenuBar, QMenu, QAction, QFileDialog, QInputDialog, QGraphicsView
-from PyQt5.QtWidgets import QGraphicsScene, QGraphicsPixmapItem, QVBoxLayout, QWidget, QGraphicsSceneWheelEvent
-
-
-from PyQt5.QtGui import QPixmap, QPainter, QColor, QImage, QBrush
-from PyQt5.QtCore import Qt
-from . import LocationObject
 import os
-from PyQt5.QtCore import QRectF
+
+from PyQt5.QtCore import Qt, QRectF
+from PyQt5.QtGui import QPixmap, QPainter, QColor, QImage, QBrush, QPen
+from PyQt5.QtWidgets import (
+    QApplication,
+    QMainWindow,
+    QMenuBar,
+    QMenu,
+    QAction,
+    QFileDialog,
+    QInputDialog,
+    QGraphicsLineItem,
+    QGraphicsView,
+    QGraphicsScene,
+    QGraphicsPixmapItem,
+    QVBoxLayout,
+    QWidget,
+    QGraphicsSceneWheelEvent,
+)
+
+from . import ImageOnCanvas, LocationObject
 
 class ViewWindow(QGraphicsView):
     def __init__(self, parent=None):
@@ -23,6 +35,14 @@ class ViewWindow(QGraphicsView):
         script_dir = os.path.dirname(os.path.abspath(__file__))
         self.texturePath = script_dir + "/tessalation-grass.png"
 
+        # Drawing attributes
+        self.drawing = False
+        self.last_left_point = None
+        self.pen = QPen(QColor("blue"), 2)
+
+        # Set up mouse events for drawing
+        self.setRenderHint(QPainter.Antialiasing)
+
         # Images
         self.image_items = []
 
@@ -32,6 +52,11 @@ class ViewWindow(QGraphicsView):
         self.left_mouse_pressed = False
         self.setMouseTracking(True)
 
+    # Draws the background as a color by the brush
+    # Eventually should have some way of having this set some:
+    #  - tessalation
+    #  - random interval sprite
+    #  - bg image
     def drawBackground(self, painter, rect):
         super().drawBackground(painter, rect)
         # self.setBackgroundBrush(QBrush((QColor(63, 155, 11))))
@@ -71,17 +96,16 @@ class ViewWindow(QGraphicsView):
         self.scene.removeItem(image_on_canvas)
 
     def mousePressEvent(self, event):
-        super(ViewWindow, self).mousePressEvent(event)
         # Maybe swap this to a switch (match in py 3.10)
         # waiting until guaranteed stability of pyqt5
-        if event.button() == Qt.LeftButton:
-            self.left_mouse_pressed = True
-            self.last_left_pos = event.pos()
-
-
-        elif event.button() == Qt.MiddleButton:
+        if event.button() == Qt.MiddleButton:
             self.middle_mouse_pressed = True
             self.last_middle_pos = event.pos()
+
+        elif event.button() == Qt.LeftButton:
+            self.drawing = True
+            self.last_draw_point = self.mapToScene(event.pos())
+            self.left_mouse_pressed = True
 
         elif event.button() == Qt.RightButton: 
             pos = self.mapToScene(event.pos())
@@ -91,19 +115,26 @@ class ViewWindow(QGraphicsView):
                 self.addImageOnCanvas(ImageOnCanvas.ImageOnCanvas(pos.x(), pos.y(), 1.0, 0.0, image_path))
 
     def mouseReleaseEvent(self, event):
-        super(ViewWindow, self).mouseReleaseEvent(event)
-
         if event.button() == Qt.MiddleButton:
             self.middle_mouse_pressed = False
 
-    def mouseMoveEvent(self, event):
-        super(ViewWindow, self).mouseMoveEvent(event)
+        if event.button() == Qt.LeftButton:
+            self.drawing = False
+            self.last_draw_point = None
 
+    def mouseMoveEvent(self, event):
         if self.middle_mouse_pressed:
             delta_middle = event.pos() - self.last_middle_pos
             self.horizontalScrollBar().setValue(self.horizontalScrollBar().value() - delta_middle.x())
             self.verticalScrollBar().setValue(self.verticalScrollBar().value() - delta_middle.y())
             self.last_middle_pos = event.pos()
+
+        if self.drawing:
+            current_point = self.mapToScene(event.pos())
+            line = QGraphicsLineItem(self.last_draw_point.x(), self.last_draw_point.y(), current_point.x(), current_point.y())
+            line.setPen(self.pen)
+            self.scene.addItem(line)
+            self.last_draw_point = current_point
 
     def list_images_on_canvas(self):
         return self.image_items

@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QTextEdit
 from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QScrollBar, QDialog, QListWidget, QListWidgetItem
 from PyQt5.QtGui import QColor
 import re
+from . import command_parser as command
 
 
 def get_xyz(text:str=None):
@@ -53,7 +54,7 @@ class HistoryWidget(QListWidget):
 
     def updateResponse(self, text):
         item = QListWidgetItem(text)
-        item.setBackground(QColor("lightgray"))
+        item.setBackground(QColor("darkgray"))
         if text is None or len(text) == 0:
             item.setBackground(QColor("red"))
             item.setText("Response Error!")
@@ -67,7 +68,7 @@ class TextEntryAndHistory(QWidget):
 
         self.historyWidget = HistoryWidget()
         item = QListWidgetItem("Text Area")
-        item.setBackground(QColor("lightgray"))
+        item.setBackground(QColor("darkgray"))
         self.historyWidget.addItem(item)
         self.scrollableTextEdit = ScrollableTextEdit()
         self.fxn_connection = fxn_connection
@@ -78,6 +79,8 @@ class TextEntryAndHistory(QWidget):
 
         self.setLayout(layout)
 
+        self.command_symbol = "/"
+        self.command_parser = command.command_parsing
 
     # this fxn should be as light as possible, as it is called locally for UI on main thread
     # heavier things should go in interaction to be put on a worker
@@ -88,8 +91,10 @@ class TextEntryAndHistory(QWidget):
 
     def interaction(self):
         self.updateHistoryClearText()
-        if starts_with(self.text) == self.command_symbol:
-            self.worker = Worker(command_parsing, self.text)
+
+        if command.starts_with(self.text) == self.command_symbol:
+            self.worker = Worker(self.command_parser, self.text)
+            self.worker.finished.connect(self.handle_response)
             self.worker.start()
 
     def handle_response(self, text):
@@ -100,7 +105,7 @@ class Worker(QThread):
 
     def __init__(self, command_fxn, text):
         super().__init__()
-        self.commmand_fxn = command_fxn 
+        self.command_fxn = command_fxn 
         self.text = text
 
     def run(self):

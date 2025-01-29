@@ -1,5 +1,5 @@
 import random
-
+# TODO move out of UI folder
 def starts_with(string: str):
     if not string or len(string) <= 0:
         return None
@@ -10,6 +10,7 @@ def roll_dice(words: list)->str:
     if not words:
         return "You need to pass an argument to roll dice!"
     total = 0
+    out_string = ""
     while words:
         current_total = 0
         parts = words[0].split("d")

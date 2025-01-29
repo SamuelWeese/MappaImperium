@@ -1,14 +1,26 @@
 # Mappa Imperium
 
-[Mappa Imperium](https://nookrium.itch.io/mappa-imperium) is a great little world building table top game designed Nookrium. You should check it and [his other work out](https://nookrium.itch.io/)!
+[Mappa Imperium](https://nookrium.itch.io/mappa-imperium) is a great little world building table top game designed by Nookrium. You should check it and [his other work out](https://nookrium.itch.io/)!
 
 
 ## This Project
 
-This project (also poorly named Mappa Imperium) is a python based (originally cpp until classes + work took too much time) is an implementation of Mappa Imperium I took the UI I wrote from [my senior design](https://github.com/kharanpv/AI_DnD) and reused it here.
+This project (also poorly named Mappa Imperium) is a python based (originally cpp until classes + work took too much time) implementation of Mappa Imperium.
+
+### Get Started
+
+This project has no build options (as of yet). To run the project:
 
 
-Currently, this project supports:
+Install requirements:
+
+```python3 -m install -r requirements.txt```
+
+Run the app:
+
+```python3 ./main.py```
+
+## Currently Supported
 
 ### Rolling in chat window
 - Use /r or /roll {x}d{y}!
@@ -30,5 +42,6 @@ Currently, this project supports:
 This is the short list of things I intend to make headway on in the next month.
 - Saving (most likely via pickle!)
 - "Multiplayer"
+- Build Options and Official Release
 
-I'm currently active and trying to work on this project daily. If you have any suggestions, feel free to open an issue. This project will no longer be p[ZeroVer](https://0ver.org/) compliant upon other people thinking it feels nice to use, and all the rules from Mappa Imperium are implemented robustly. What that means, I have yet to find out.
+I'm currently active and trying to work on this project daily. If you have any suggestions, feel free to open an issue. This project will no longer be [ZeroVer](https://0ver.org/) compliant upon other people thinking it feels nice to use, and all the rules from Mappa Imperium are implemented robustly. What that means, I have yet to find out.

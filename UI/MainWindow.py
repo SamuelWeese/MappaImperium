@@ -1,11 +1,11 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSplitter, QMenuBar, QMenu, QAction, QFileDialog, QInputDialog, QGraphicsView
-from PyQt5.QtWidgets import QGraphicsScene, QGraphicsPixmapItem, QHBoxLayout, QVBoxLayout, QWidget, QGraphicsSceneWheelEvent
+from PyQt5.QtWidgets import QGraphicsScene, QGraphicsPixmapItem, QHBoxLayout, QVBoxLayout, QWidget, QGraphicsSceneWheelEvent, QColorDialog
 
 
 from PyQt5.QtGui import QPixmap, QPainter
 from PyQt5.QtCore import Qt, pyqtSignal, pyqtSlot
 
-from . import ImageOnCanvas, ViewWindow, ScrollableTextEdit
+from . import ImageOnCanvas, ViewWindow, ScrollableTextEdit, CanvasTool 
 
 import os
 DEBUGGING=False
@@ -25,9 +25,13 @@ class MainWindow(QMainWindow):
         self.image_widget = ViewWindow.ViewWindow(self)
         splitter.addWidget(self.image_widget)
 
-        # Load the default
-
-        self.side_bar = ScrollableTextEdit.TextEntryAndHistory(fxn_connection=self.open_latest_image)
+        # Load the default text and tool selector
+        pen_tool = CanvasTool.CanvasToolOptions("Pen", CanvasTool.ColorSelector(self.image_widget.get_pen()))
+        canvas_tools = [pen_tool]
+        side_bar_splitter = QSplitter(Qt.Vertical)
+        side_bar_splitter.addWidget(ScrollableTextEdit.TextEntryAndHistory(fxn_connection=self.open_latest_image))
+        side_bar_splitter.addWidget(CanvasTool.CanvasToolSelector(canvas_tools))
+        self.side_bar = side_bar_splitter
         splitter.addWidget(self.side_bar)
 
         # Set the size ratio for the widgets (80% - 20%)

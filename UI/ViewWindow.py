@@ -38,7 +38,7 @@ class ViewWindow(QGraphicsView):
         # Drawing attributes
         self.drawing = False
         self.last_left_point = None
-        self.pen = QPen(QColor("blue"), 2)
+        self.pen = QPen(QColor("tan"), 2)
 
         # Set up mouse events for drawing
         self.setRenderHint(QPainter.Antialiasing)
@@ -52,6 +52,9 @@ class ViewWindow(QGraphicsView):
         self.left_mouse_pressed = False
         self.setMouseTracking(True)
 
+    def get_pen(self):
+        return self.pen
+
     # Draws the background as a color by the brush
     # Eventually should have some way of having this set some:
     #  - tessalation
@@ -59,7 +62,6 @@ class ViewWindow(QGraphicsView):
     #  - bg image
     def drawBackground(self, painter, rect):
         super().drawBackground(painter, rect)
-        # self.setBackgroundBrush(QBrush((QColor(63, 155, 11))))
         self.setBackgroundBrush(QBrush((QColor(0, 0, 0))))
 
     def set_image(self, image_path):
@@ -109,10 +111,10 @@ class ViewWindow(QGraphicsView):
 
         elif event.button() == Qt.RightButton: 
             pos = self.mapToScene(event.pos())
-            #rotation = Qt.QInput
             image_path, _ = QFileDialog.getOpenFileName(self, "Open Image", "", "Image Files (*.png *.jpg *.bmp *.gif *.jpeg *.lobj);;All Files (*)")
             if image_path:
                 self.addImageOnCanvas(ImageOnCanvas.ImageOnCanvas(pos.x(), pos.y(), 1.0, 0.0, image_path))
+        super(QGraphicsView, self).mousePressEvent(event)
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.MiddleButton:
@@ -121,6 +123,8 @@ class ViewWindow(QGraphicsView):
         if event.button() == Qt.LeftButton:
             self.drawing = False
             self.last_draw_point = None
+
+        super(QGraphicsView, self).mouseReleaseEvent(event)
 
     def mouseMoveEvent(self, event):
         if self.middle_mouse_pressed:
@@ -131,10 +135,12 @@ class ViewWindow(QGraphicsView):
 
         if self.drawing:
             current_point = self.mapToScene(event.pos())
-            line = QGraphicsLineItem(self.last_draw_point.x(), self.last_draw_point.y(), current_point.x(), current_point.y())
-            line.setPen(self.pen)
-            self.scene.addItem(line)
+            if self.last_draw_point:
+                line = QGraphicsLineItem(self.last_draw_point.x(), self.last_draw_point.y(), current_point.x(), current_point.y())
+                line.setPen(self.pen)
+                self.scene.addItem(line)
             self.last_draw_point = current_point
+        super(QGraphicsView, self).mouseMoveEvent(event)
 
     def list_images_on_canvas(self):
         return self.image_items
@@ -202,3 +208,6 @@ class ViewWindow(QGraphicsView):
         # WE NEED COORDS HERE
         if latest_image:
             self.addImageOnCanvas(ImageOnCanvas.ImageOnCanvas(int(x), int(y), int(z), rotation, latest_image_path))
+
+    def update_pen_color(color: QColor)->None:
+        self.pen.setColor(color)

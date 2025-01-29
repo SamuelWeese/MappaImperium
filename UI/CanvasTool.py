@@ -19,19 +19,11 @@ class ColorSelector(QWidget):
             # TODO
             #| QColorDialog.DontUseNativeDialog
         )
-        self.button = QPushButton("Update Color")
-        self.button.clicked.connect(self.show_color_dialog)
         layout.addWidget(self.color_dialog)
-        layout.addWidget(self.button)
+        self.color_dialog.currentColorChanged.connect(self.update_color)
 
-    def show_color_dialog(self):
-        self.color_dialog.show()
-
-    def update_color(self):
-        color = self.color_dialog.getColor()
-        color = self.color_dialog.currentColor()
+    def update_color(self, color):
         self.tool.setColor(color)
-
 
 # Below are the interface and display for the content
 

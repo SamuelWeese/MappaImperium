@@ -29,9 +29,9 @@ Run the app:
 
 ### Drawing on screen (WIP)
 - Color selection is implemented, but I'm unhappy with it
-- Currently only a single width pen is unsupported (and hopefully no one will see this message as I will fix it in the next 48 hours)
+- Width selection is supported, but the pen gets jagged when scaled up in width (WIP)
 
-![alt text](/readme.img/0.0.0.drawing_example.png)
+![alt text](/readme.img/0.0.3.drawing_example.png)
 
 ### Adding places with custom images (WIP)
 - Currently images are supported to the exent they were in the [Jaran Project](https://github.com/kharanpv/AI_DnD). I plan on adding additional options for data storage once I rework drawing and image overlays.

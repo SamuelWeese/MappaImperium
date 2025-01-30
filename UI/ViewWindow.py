@@ -19,7 +19,7 @@ from PyQt5.QtWidgets import (
     QGraphicsSceneWheelEvent,
 )
 
-from . import ImageOnCanvas, LocationObject
+from . import ImageOnCanvas, LocationObject, CanvasTool
 
 class ViewWindow(QGraphicsView):
     def __init__(self, parent=None):
@@ -38,7 +38,16 @@ class ViewWindow(QGraphicsView):
         # Drawing attributes
         self.drawing = False
         self.last_left_point = None
-        self.pen = QPen(QColor("tan"), 2)
+
+        pen = QPen(QColor("tan"), 2)
+        pen_tab = CanvasTool.CanvasToolOptions("Pen", CanvasTool.ColorAndWidth(pen))
+
+
+        # Tools
+
+        self.tool_list = [ pen_tab ]
+        self.current_tool = self.tool_list[0].tab_content.tool
+        self.tool_tab = CanvasTool.CanvasToolSelector(self.tool_list)
 
         # Set up mouse events for drawing
         self.setRenderHint(QPainter.Antialiasing)
@@ -52,8 +61,9 @@ class ViewWindow(QGraphicsView):
         self.left_mouse_pressed = False
         self.setMouseTracking(True)
 
-    def get_pen(self):
-        return self.pen
+
+    def get_tool(self):
+        return self.current_tool
 
     # Draws the background as a color by the brush
     # Eventually should have some way of having this set some:
@@ -137,7 +147,7 @@ class ViewWindow(QGraphicsView):
             current_point = self.mapToScene(event.pos())
             if self.last_draw_point:
                 line = QGraphicsLineItem(self.last_draw_point.x(), self.last_draw_point.y(), current_point.x(), current_point.y())
-                line.setPen(self.pen)
+                line.setPen(self.current_tool)
                 self.scene.addItem(line)
             self.last_draw_point = current_point
         super(QGraphicsView, self).mouseMoveEvent(event)
@@ -208,6 +218,3 @@ class ViewWindow(QGraphicsView):
         # WE NEED COORDS HERE
         if latest_image:
             self.addImageOnCanvas(ImageOnCanvas.ImageOnCanvas(int(x), int(y), int(z), rotation, latest_image_path))
-
-    def update_pen_color(color: QColor)->None:
-        self.pen.setColor(color)

@@ -26,11 +26,9 @@ class MainWindow(QMainWindow):
         splitter.addWidget(self.image_widget)
 
         # Load the default text and tool selector
-        pen_tool = CanvasTool.CanvasToolOptions("Pen", CanvasTool.ColorSelector(self.image_widget.get_pen()))
-        canvas_tools = [pen_tool]
         side_bar_splitter = QSplitter(Qt.Vertical)
         side_bar_splitter.addWidget(ScrollableTextEdit.TextEntryAndHistory(fxn_connection=self.open_latest_image))
-        side_bar_splitter.addWidget(CanvasTool.CanvasToolSelector(canvas_tools))
+        side_bar_splitter.addWidget(self.image_widget.tool_tab)
         self.side_bar = side_bar_splitter
         splitter.addWidget(self.side_bar)
 
@@ -85,6 +83,7 @@ class MainWindow(QMainWindow):
 
     def setup_side_bar(self):
         pass
+
     def open_image(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog

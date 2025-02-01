@@ -164,8 +164,6 @@ class ImageControllerPopup(Popup.Popup):
         self.alternate_parent.swap_selection()
 
 class ImageOnCanvas(QGraphicsPixmapItem, QObject):
-    # Define a custom signal
-    #destroyed = pyqtSignal()
 
     def __init__(self, x, y, scale, rotation, image_path, parent=None, data_name:str = None, data_text:str = None):
         super(ImageOnCanvas, self).__init__()
@@ -274,9 +272,3 @@ class ImageOnCanvas(QGraphicsPixmapItem, QObject):
             scale=self.scale()
         )
         return location_object
-        
-    #
-    # Unnecessary currently
-    #
-    #def __del__(self):
-    #    remove_self()

@@ -1,13 +1,18 @@
+try:
+   import cPickle as pickle
+except:
+   import pickle
+
+
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSplitter, QMenuBar, QMenu, QAction, QFileDialog, QInputDialog, QGraphicsView
-from PyQt5.QtWidgets import QGraphicsScene, QGraphicsPixmapItem, QHBoxLayout, QVBoxLayout, QWidget, QGraphicsSceneWheelEvent, QColorDialog
+from PyQt5.QtWidgets import QGraphicsScene, QGraphicsPixmapItem, QHBoxLayout, QVBoxLayout, QWidget, QGraphicsSceneWheelEvent, QColorDialog, QDialog
 
 
 from PyQt5.QtGui import QPixmap, QPainter
 from PyQt5.QtCore import Qt, pyqtSignal, pyqtSlot
 
-from . import ImageOnCanvas, ViewWindow, ScrollableTextEdit, CanvasTool 
+from . import ImageOnCanvas, ViewWindow, ScrollableTextEdit, CanvasTool, Popup
 
-import os
 DEBUGGING=False
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -62,11 +67,11 @@ class MainWindow(QMainWindow):
         file_menu.addAction(list_images_action)
 
         save_images_action = QAction('Save State', self)
-        save_images_action.triggered.connect(self.save_images)
+        save_images_action.triggered.connect(self.save_all)
         file_menu.addAction(save_images_action)
 
         load_images_action = QAction('Load State', self)
-        load_images_action.triggered.connect(self.load_images)
+        load_images_action.triggered.connect(self.load_all)
         file_menu.addAction(load_images_action)
 
         
@@ -183,6 +188,34 @@ class MainWindow(QMainWindow):
 
     def clear_canvas(self):
         self.image_widget.clear_canvas()
+
+    def save_all(self):
+        file_options = QFileDialog.Options()
+        file_name, _ = QFileDialog.getSaveFileName(self, "Save File", "", "All Files (*);;Mappa Files (*.mappa)", options=file_options)
+        if file_name:
+            with open(file_name, 'wb') as file_handle:
+                # 5 refers to the new pickling protocol as of PEP 574 (https://peps.python.org/pep-0574/)
+                try:
+                    pickle.dump(self.__dict__, file_handle, -1)
+                except Exception as e:
+                    Popup.Popup(self, f"Work did not save!\n {e}", "Error Saving", blocking=True).show()
+        else:
+            Popup.Popup(self, "File not found!", "Error Finding File", blocking=True).show()
+
+    def load_all(self):
+        new_data = None
+        file_options = QFileDialog.Options()
+        file_name, _ = QFileDialog.getOpenFileName(self, "Load File", "", "All Files (*);;Mappa Files (*.mappa)", options=file_options)
+        if file_name:
+            new_data = None
+            with open(file_name, 'rb') as file_handle:
+                try:
+                    new_data = pickle.load(file_handle)
+                except Exception as e:
+                    Popup.Popup(self, f"File did not load!\n {e}", "Error Loading File", blocking=True).show()
+                    return
+            self.__dict__.update(new_data)
+
 
 
 if __name__ == '__main__':

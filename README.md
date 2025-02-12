@@ -43,5 +43,6 @@ This is the short list of things I intend to make headway on in the next month.
 - Saving (most likely via pickle!)
 - "Multiplayer"
 - Build Options and Official Release
+- Hot keys
 
 I'm currently active and trying to work on this project daily. If you have any suggestions, feel free to open an issue. This project will no longer be [ZeroVer](https://0ver.org/) compliant upon other people thinking it feels nice to use, and all the rules from Mappa Imperium are implemented robustly. What that means, I have yet to find out.

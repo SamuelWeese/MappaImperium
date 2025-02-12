@@ -1,19 +1,17 @@
-try:
-   import cPickle as pickle
-except:
-   import pickle
-
+import json
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSplitter, QMenuBar, QMenu, QAction, QFileDialog, QInputDialog, QGraphicsView
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsPixmapItem, QHBoxLayout, QVBoxLayout, QWidget, QGraphicsSceneWheelEvent, QColorDialog, QDialog
 
-
 from PyQt5.QtGui import QPixmap, QPainter
 from PyQt5.QtCore import Qt, pyqtSignal, pyqtSlot
 
-from . import ImageOnCanvas, ViewWindow, ScrollableTextEdit, CanvasTool, Popup
+from . import ImageOnCanvas, ViewWindow, ScrollableTextEdit, CanvasTool, Popup, DirtySave
 
-DEBUGGING=False
+DEBUGGING=True
+if DEBUGGING:
+    import pprint
+    DEBUG_NAME = "WHY ME"
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -74,7 +72,6 @@ class MainWindow(QMainWindow):
         load_images_action.triggered.connect(self.load_all)
         file_menu.addAction(load_images_action)
 
-        
         # Canvas Menu
         canvas_menu = menubar.addMenu('Canvas')
 
@@ -96,7 +93,6 @@ class MainWindow(QMainWindow):
 
         if file_name:
             self.image_widget.set_image(file_name)
-    
 
     def open_latest_image(self, x, y, z, rotation = 0.0):
         folder_path = os.path.join(os.path.dirname(__file__), "test_images")
@@ -132,8 +128,6 @@ class MainWindow(QMainWindow):
         if latest_image:
             self.image_widget.addImageOnCanvas(ImageOnCanvas.ImageOnCanvas(int(x)*xy_scale, int(y)*xy_scale*(-1), int(z), rotation, latest_image_path))
 
-
-
     def list_images(self):
         image_list = self.image_widget.list_images_on_canvas()
         for index, image_info in enumerate(image_list):
@@ -142,8 +136,7 @@ class MainWindow(QMainWindow):
             # Below broke upon importing images from cont files, don't know why
             #print(f"  Rotation: {image_info['rotation']} degrees")
             print(f"  File Name: {image_info['image_path']}")
-            print()
-    
+
     def save_images(self):
         options = QFileDialog.Options()
         file_name, _ = QFileDialog.getSaveFileName(self, "Save File", "", "All Files (*);;Text Files (*.txt)", options=options)
@@ -193,10 +186,11 @@ class MainWindow(QMainWindow):
         file_options = QFileDialog.Options()
         file_name, _ = QFileDialog.getSaveFileName(self, "Save File", "", "All Files (*);;Mappa Files (*.mappa)", options=file_options)
         if file_name:
-            with open(file_name, 'wb') as file_handle:
-                # 5 refers to the new pickling protocol as of PEP 574 (https://peps.python.org/pep-0574/)
+            with open(file_name, 'w') as file_handle:
                 try:
-                    pickle.dump(self.__dict__, file_handle, -1)
+                    value = DirtySave.jsonify_object(self)
+                    pprint.pprint(value)
+                    file_handle.write(str(value))
                 except Exception as e:
                     Popup.Popup(self, f"Work did not save!\n {e}", "Error Saving", blocking=True).show()
         else:
@@ -210,10 +204,14 @@ class MainWindow(QMainWindow):
             new_data = None
             with open(file_name, 'rb') as file_handle:
                 try:
-                    new_data = pickle.load(file_handle)
+                    new_data = json.load(file_handle)
                 except Exception as e:
                     Popup.Popup(self, f"File did not load!\n {e}", "Error Loading File", blocking=True).show()
                     return
+            new_object = DirtySave.load_object(new_data)
+            if type(new_object) is MainWindow:
+                self = new_object
+                return
             self.__dict__.update(new_data)
 
 
